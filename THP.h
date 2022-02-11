@@ -7,20 +7,25 @@ struct DigooData{
   float pressure      = 760.00;
   
 };
+CUSTOM_CHAR(Pressure,  E863F10F-079E-48FF-8F27-9C2605A29F52, PR+EV, FLOAT, 760, 600, 1200, true);
+
 
 struct THP : Service::TemperatureSensor {         // First we create a derived class from the HomeSpan 
   
   SpanCharacteristic *CurrentTemperature;              // here we create a generic pointer to a SpanCharacteristic 
   SpanCharacteristic *StatusActive;
   DigooData*          Data;
+  SpanCharacteristic  *AirPressure;
+    
     
   THP(DigooData* Data) : Service::TemperatureSensor(){
  
     LOG1("Constructing digoo…\n");
     this->Data = Data;
-    CurrentTemperature=new Characteristic::CurrentTemperature(25);// this is where we create the On Characterstic we had previously defined in setup().  Save this in the pointer created above, for use below
+    CurrentTemperature=new Characteristic::CurrentTemperature(25);
     CurrentTemperature->setRange(-50, 100, 0.1);
     StatusActive=new Characteristic::StatusActive(true);
+    AirPressure = new Characteristic::Pressure(760);
       
     LOG1(this->Data->humidity);         
     LOG1("Constructing Digoo successful!\n");
@@ -40,6 +45,7 @@ struct THP : Service::TemperatureSensor {         // First we create a derived c
     if (Data->isNew[0]){
       LOG1("sensor T update\n");
       Data->isNew[0] = false;
+      AirPressure->setVal(Data->pressure);
       
       if (CurrentTemperature->getVal() != Data->temperature) {CurrentTemperature->setVal(Data->temperature);}
       //CurrentTemperature->setVal(Data->temperature);
@@ -57,13 +63,10 @@ struct THP : Service::TemperatureSensor {         // First we create a derived c
     
     THP_h(DigooData* Data) : Service::HumiditySensor(){
    
-      LOG1("Constructing digooH…\n");
       this->DataH = Data;
       CurrentRelativeHumidity=new Characteristic::CurrentRelativeHumidity(0);// this is where we create the On Characterstic we had previously defined in setup().  Save this in the pointer created above, for use below
       StatusActive=new Characteristic::StatusActive(true);
      
-      LOG1(this->DataH->humidity);         
-      LOG1("Constructing Digoo successful!\n");
     } // end constructor
   
   

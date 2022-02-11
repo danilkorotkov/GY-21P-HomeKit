@@ -10,7 +10,6 @@
 #include "HomeSpan.h" 
 #include "THP.h" 
 DigooData gy21p;
-THP *THPsensor;
 unsigned long TempTimeout  = 5000;   // чтение термодатчков
 unsigned long TempTime     = 0;   // 
 
@@ -46,7 +45,7 @@ void HomeKit(){
     new Service::HAPProtocolInformation();      
       new Characteristic::Version("1.1.0"); 
   
-    THPsensor = new THP(&gy21p);
+    new THP(&gy21p);
 }
 
 void poll_gy21p(){
@@ -67,6 +66,10 @@ void poll_gy21p(){
   Serial.print(SiHum, 2);
   Serial.print("\tTemperature(Si7021): ");
   Serial.println(SiTemp, 2);
+
+  if (bmePress != NAN){
+    gy21p.pressure = bmePress;
+  }
 
   if (bmeTemp != NAN && SiTemp != NAN){
     gy21p.temperature = (bmeTemp + SiTemp)/2;
@@ -163,3 +166,40 @@ void loop(){
     delay(5000);
 }
 */
+
+/*
+ CustomCharacteristic.AtmosphericPressureLevel = function() {
+    Characteristic.call(this, 'Air Pressure', CustomCharacteristic.AtmosphericPressureLevel.UUID);
+    this.setProps({
+      format: Characteristic.Formats.UINT8,
+      unit: "mbar",
+      minValue: 800,
+      maxValue: 1200,
+      minStep: 1,
+      perms: [Characteristic.Perms.READ, Characteristic.Perms.NOTIFY]
+    });
+    this.value = this.getDefaultValue();
+  };
+  CustomCharacteristic.AtmosphericPressureLevel.UUID = 'E863F10F-079E-48FF-8F27-9C2605A29F52';
+  inherits(CustomCharacteristic.AtmosphericPressureLevel, Characteristic);
+
+  // courtesy of https://github.com/robi-van-kinobi/homebridge-cubesensors
+  CustomCharacteristic.AtmosphericPressureSensor = function(displayName, subtype) {
+    Service.call(this, displayName, CustomCharacteristic.AtmosphericPressureSensor.UUID, subtype);
+
+    // Required Characteristics
+    this.addCharacteristic(CustomCharacteristic.AtmosphericPressureLevel);
+
+    // Optional Characteristics
+    this.addOptionalCharacteristic(Characteristic.StatusActive);
+    this.addOptionalCharacteristic(Characteristic.StatusFault);
+    this.addOptionalCharacteristic(Characteristic.StatusLowBattery);
+    this.addOptionalCharacteristic(Characteristic.StatusTampered);
+    this.addOptionalCharacteristic(Characteristic.Name);
+  };
+  CustomCharacteristic.AtmosphericPressureSensor.UUID = 'B77831FD-D66A-46A4-B66D-FD7EE8DFE3CE';
+  inherits(CustomCharacteristic.AtmosphericPressureSensor, Service);
+
+
+ */
+//#define CUSTOM_CHAR(NAME,UUID,PERMISISONS,FORMAT,TYPE,DEFVAL,MINVAL,MAXVAL,STATIC_RANGE)
