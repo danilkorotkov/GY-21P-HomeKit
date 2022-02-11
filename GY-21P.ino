@@ -10,7 +10,7 @@
 #include "HomeSpan.h" 
 #include "THP.h" 
 DigooData gy21p;
-unsigned long TempTimeout  = 5000;   // чтение термодатчков
+unsigned long TempTimeout  = 30000;   // чтение термодатчков
 unsigned long TempTime     = 0;   // 
 
 #include <Adafruit_Sensor.h>
@@ -104,6 +104,7 @@ void setup() {
   Wire.begin(SDA, SCL, uint32_t (400000));
   bme.begin(BMP280_ADDRESS_ALT);
   sensor.begin();
+  poll_gy21p();
   HomeKit();
 
 
