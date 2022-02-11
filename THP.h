@@ -43,11 +43,11 @@ struct THP : Service::TemperatureSensor {         // First we create a derived c
     }
     
     if (Data->isNew[0]){
-      LOG1("sensor T update\n");
+      
       Data->isNew[0] = false;
       AirPressure->setVal(Data->pressure);
       
-      if (CurrentTemperature->getVal() != Data->temperature) {CurrentTemperature->setVal(Data->temperature);}
+      if (CurrentTemperature->getVal() != Data->temperature) {CurrentTemperature->setVal(Data->temperature);LOG1("sensor T update\n");}
       //CurrentTemperature->setVal(Data->temperature);
       
       if ( !(StatusActive -> getVal()) ) {StatusActive->setVal(true);}
@@ -77,10 +77,10 @@ struct THP : Service::TemperatureSensor {         // First we create a derived c
       }
       
       if (DataH->isNew[1]){
-        LOG1("sensor H update\n");
+        
         DataH->isNew[1] = false;
 
-        if (CurrentRelativeHumidity->getVal() != DataH->humidity) {CurrentRelativeHumidity->setVal(DataH->humidity);}
+        if (CurrentRelativeHumidity->getVal() != DataH->humidity) {CurrentRelativeHumidity->setVal(DataH->humidity);LOG1("sensor H update\n");}
         //CurrentRelativeHumidity->setVal(DataH->humidity);
         
         if ( !(StatusActive -> getVal()) ) {StatusActive->setVal(true);}
