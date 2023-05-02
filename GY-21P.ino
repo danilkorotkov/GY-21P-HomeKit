@@ -71,25 +71,25 @@ void poll_gy21p(){
     gy21p.pressure = bmePress;
   }
 
-  if (bmeTemp != NAN && SiTemp != NAN){
+  if (!isnan(bmeTemp) && !isnan(SiTemp)){
     gy21p.temperature = (bmeTemp + SiTemp)/2;
     gy21p.updated     = millis();
     gy21p.isNew[0]    = true;
   }
 
-  if (bmeTemp == NAN && SiTemp != NAN){
+  if (!isnan(bmeTemp) && isnan(SiTemp)){
     gy21p.temperature = bmeTemp;
     gy21p.updated     = millis();
     gy21p.isNew[0]    = true;
   }  
   
-  if (bmeTemp != NAN && SiTemp == NAN){
+  if (isnan(bmeTemp) && !isnan(SiTemp)){
     gy21p.temperature = SiTemp;
     gy21p.updated     = millis();
     gy21p.isNew[0]    = true;
   }
 
-  if (SiHum != NAN){
+  if (!isnan(SiHum)){
     gy21p.humidity    = SiHum;
     gy21p.updated     = millis();
     gy21p.isNew[1]    = true;
